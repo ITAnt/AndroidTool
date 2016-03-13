@@ -12,6 +12,9 @@
 1.将本项目导入编辑器，引用本项目。
 
 2.所有的工具都由ToolFactory工厂产生，比如要使用DateTool中的获取当前日期方法，只需要两行代码：
+
 DateTool dateTool = ToolFactory.getInstance().produceDateTool();
+
 Toast.makeText(this, dateTool.getCurrentDate(), Toast.LENGTH_SHORT).show();
+
 如果你不知道有哪些方法，直接使用ToolFactory加一个.，然后编辑器就会提示你有哪些方法了。
