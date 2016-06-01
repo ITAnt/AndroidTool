@@ -228,4 +228,25 @@ public class NetworkTool {
 		return config;
 	}
 	/*****************************供接收者使用***************************************/
+	
+	/**
+	 *
+	 * @return 运营商名称
+	 */
+	public static String getCommunicationCorporation(Context context) {
+		// 移动设备网络代码（英语：Mobile Network Code，MNC）是与移动设备国家代码（Mobile Country Code，MCC）
+		// （也称为“MCC / MNC”）相结合, 例如46000，前三位是MCC，后两位是MNC 获取手机服务商信息
+		String operatorsName = "未知";
+		String IMSI =  ((TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE)).getSubscriberId();
+		// IMSI号前面3位460是国家，紧接着后面2位00 运营商代码
+		System.out.println(IMSI);
+		if (IMSI.startsWith("46000") || IMSI.startsWith("46002") || IMSI.startsWith("46007")) {
+			operatorsName = "中国移动";
+		} else if (IMSI.startsWith("46001") || IMSI.startsWith("46006")) {
+			operatorsName = "中国联通";
+		} else if (IMSI.startsWith("46003") || IMSI.startsWith("46005")) {
+			operatorsName = "中国电信";
+		}
+		return operatorsName;
+	}
 }
