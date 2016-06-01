@@ -286,7 +286,7 @@ public class FileTool {
         //取得SD卡文件路径
         File path = Environment.getExternalStorageDirectory(); 
         StatFs sf = new StatFs(path.getPath()); 
-        //获取单个数据块的大小(Byte)
+        //获取单个数据块的大小(bit)
         long blockSize = sf.getBlockSize(); 
         //空闲的数据块的数量
         long freeBlocks = sf.getAvailableBlocks();
