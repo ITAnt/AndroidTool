@@ -78,4 +78,48 @@ public class DateTool {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
 		return dateFormat.format(new Date());
 	}
+	
+	/**
+	* 时间戳转日期
+	* @param timeMillis System.currentTimeMillis()
+	* @return 时间
+	*/
+	public static String getDateFromTimeMillis(long timeMillis) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+		String time = sdf.format(new Date(timeMillis));
+		return time;
+	}	
+	
+	/**
+     * 自定义格式时间戳转换
+     * 
+     * @param beginDate
+     * @return
+     */
+    public static String timestampToDate(String beginDate,String format) {
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+        String sd = sdf.format(new Date(Long.parseLong(beginDate)));
+        return sd;
+    }
+
+    /**
+     * 将字符串转为时间戳
+     * 
+     * @param user_time
+     * @return
+     */
+    public static String dateToTimestamp(String user_time) {
+        String re_time = null;
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        Date d;
+        try {
+            d = sdf.parse(user_time);
+            long l = d.getTime();
+            String str = String.valueOf(l);
+            re_time = str.substring(0, 10);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return re_time;
+    }
 }
