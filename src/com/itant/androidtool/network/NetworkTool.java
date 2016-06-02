@@ -249,4 +249,46 @@ public class NetworkTool {
 		}
 		return corporation;
 	}
+	
+	/**
+	 * 获取外网IP
+	 * @return
+	 */
+	public String getOutIP() {
+		String IP = "";
+		try {
+			String address = "http://ip.taobao.com/service/getIpInfo2.php?ip=myip";
+	
+			URL url = new URL(address);
+			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+			connection.setUseCaches(false);
+			if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+				InputStream in = connection.getInputStream();
+				// 将流转化为字符串
+				BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+				String tmpString = "";
+				StringBuilder retJSON = new StringBuilder();
+				while ((tmpString = reader.readLine()) != null) {
+					retJSON.append(tmpString + "\n");
+				}
+	
+				JSONObject jsonObject = new JSONObject(retJSON.toString());
+				String code = jsonObject.getString("code");
+				if (code.equals("0")) {
+					JSONObject data = jsonObject.getJSONObject("data");
+					IP = data.getString("ip");
+				} else {
+					IP = "";
+					Log.e("提示", "IP接口异常，无法获取IP地址！");
+				}
+			} else {
+				IP = "";
+				Log.e("提示", "网络连接异常，无法获取IP地址！");
+			}
+		} catch (Exception e) {
+			IP = "";
+			Log.e("提示", "获取IP地址时出现异常，异常信息是：" + e.toString());
+		}
+		return IP;
+	}
 }
