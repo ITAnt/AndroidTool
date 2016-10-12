@@ -278,4 +278,75 @@ public class AppTool {
 	    } catch (Exception e) {}
 	    return 0;
 	}
+	
+	
+/**
+     * 安装一个app
+     *
+     * @param context
+     * @param filePath 需要安装的文件路径
+     * @return
+     */
+    public boolean install(Context context, String filePath) {
+        boolean installSuccess = true;
+        try {
+            Intent i = new Intent(Intent.ACTION_VIEW);
+            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            i.setDataAndType(Uri.parse("file://" + filePath), "application/vnd.android.package-archive");
+            context.startActivity(i);
+        } catch (Exception e) {
+            installSuccess = false;
+        }
+        return installSuccess;
+    }
+
+    /**
+     * 根据包名判断是否安装
+     * @param context
+     * @param packageName
+     * @return
+     */
+    public boolean checkApkExist(Context context, String packageName) {
+        if (packageName == null || "".equals(packageName))
+            return false;
+        try {
+            context.getPackageManager().getApplicationInfo(packageName, PackageManager.GET_UNINSTALLED_PACKAGES);
+            return true;
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
+    }
+
+    /**
+     * 根据包名启动apk
+     *
+     * @param packagename
+     */
+    public void openAppByPackageName(Context context, String packagename) {
+        PackageInfo packageinfo = null;
+        try {
+            packageinfo = context.getPackageManager().getPackageInfo(packagename, 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        if (packageinfo == null) {
+            return;
+        }
+        Intent resolveIntent = new Intent(Intent.ACTION_MAIN, null);
+        resolveIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+        resolveIntent.setPackage(packageinfo.packageName);
+        List<ResolveInfo> resolveinfoList = context.getPackageManager()
+                .queryIntentActivities(resolveIntent, 0);
+
+        ResolveInfo resolveinfo = resolveinfoList.iterator().next();
+        if (resolveinfo != null) {
+            String packageName = resolveinfo.activityInfo.packageName;
+            String className = resolveinfo.activityInfo.name;
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.addCategory(Intent.CATEGORY_LAUNCHER);
+            ComponentName cn = new ComponentName(packageName, className);
+            intent.setComponent(cn);
+            context.startActivity(intent);
+        }
+    }
 }
