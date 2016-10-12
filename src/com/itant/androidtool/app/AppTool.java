@@ -94,17 +94,36 @@ public class AppTool {
 		return names;
 	}
 	
-	/**
-	 * 当前栈顶的Activity名称
-	 * 
-	 * @param context 上下文环境
-	 */
-	public String getCurrentActivity(Context context) {
-		ActivityManager am = (ActivityManager) context.getApplicationContext().getSystemService(Context.ACTIVITY_SERVICE);
-		List<ActivityManager.RunningTaskInfo> taskInfo = am.getRunningTasks(1);
-        String currentRunningActivityName = taskInfo.get(0).topActivity.getClassName();
-        return currentRunningActivityName;
-	}
+/**
+     * 获取当前正在运行的APP的包名
+     * @param context
+     * @return
+     */
+    public static String getCurrentAppPackageName(Context context) {
+        String packageName = null;
+        ActivityManager activityManager = (ActivityManager) context.getSystemService (Context.ACTIVITY_SERVICE);
+        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP) {
+            packageName = activityManager.getRunningAppProcesses().get(0).processName;
+        } else if(Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+            UsageStatsManager usm = (UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE);
+            long time = System.currentTimeMillis();
+            List<UsageStats> appList = usm.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, time - 1000 * 1000, time);
+            if (appList != null && appList.size() > 0) {
+                SortedMap<Long, UsageStats> mySortedMap = new TreeMap<>();
+                for (UsageStats usageStats : appList) {
+                    mySortedMap.put(usageStats.getLastTimeUsed(), usageStats);
+                }
+                if (mySortedMap != null && !mySortedMap.isEmpty()) {
+                    packageName = mySortedMap.get(mySortedMap.lastKey()).getPackageName();
+                }
+            }
+
+        } else {
+            packageName = activityManager.getRunningTasks(1).get(0).topActivity.getPackageName();
+        }
+
+        return packageName;
+    }
 	
 	/**
 	 * 获取当前正在运行的应用的包名
